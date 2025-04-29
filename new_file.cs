@@ -47,6 +47,7 @@ public class Program
         }
 
         return y;
+    }
 
     static double[] SolveSimultaneousEquations(double[,] coefficients, double[] constants)
     {
