@@ -14,6 +14,50 @@ class Program
         int n = graph.GetLength(0);
         int result = TSP(graph, n);
         Console.WriteLine($"Minimum cost: {result}");
+        // Example of solving simultaneous equations
+        double[,] coefficients = {
+            { 2, -1, 1 },
+            { 3, 3, 9 },
+            { 3, 3, 5 }
+        };
+        double[] constants = { 8, 0, -6 };
+        double[] solution = SolveSimultaneousEquations(coefficients, constants);
+
+        Console.WriteLine("Solution to the simultaneous equations:");
+        for (int i = 0; i < solution.Length; i++)
+        {
+            Console.WriteLine($"x{i + 1} = {solution[i]}");
+        }
+    }
+
+    static double[] SolveSimultaneousEquations(double[,] coefficients, double[] constants)
+    {
+        int n = constants.Length;
+        for (int i = 0; i < n; i++)
+        {
+            // Make the diagonal contain all 1's
+            double factor = coefficients[i, i];
+            for (int j = 0; j < n; j++)
+            {
+                coefficients[i, j] /= factor;
+            }
+            constants[i] /= factor;
+
+            // Make the other rows have 0 in current column
+            for (int k = 0; k < n; k++)
+            {
+                if (k != i)
+                {
+                    factor = coefficients[k, i];
+                    for (int j = 0; j < n; j++)
+                    {
+                        coefficients[k, j] -= factor * coefficients[i, j];
+                    }
+                    constants[k] -= factor * constants[i];
+                }
+            }
+        }
+        return constants;
     }
 
     static int TSP(int[,] graph, int n)
