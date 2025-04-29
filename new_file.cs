@@ -31,8 +31,30 @@ public class Program
         // Example of solving a differential equation using Euler's method
         Func<double, double, double> dydx = (x, y) => x + y;
         double x0 = 0, y0 = 1, h = 0.1, xEnd = 1;
-        double yEnd = SolveDifferentialEquationEuler(dydx, x0, y0, h, xEnd);
-        Console.WriteLine($"Solution to the differential equation at x = {xEnd}: y = {yEnd}");
+        double yEndEuler = SolveDifferentialEquationEuler(dydx, x0, y0, h, xEnd);
+        Console.WriteLine($"Solution to the differential equation using Euler's method at x = {xEnd}: y = {yEndEuler}");
+
+        double yEndRungeKutta = SolveDifferentialEquationRungeKutta(dydx, x0, y0, h, xEnd);
+        Console.WriteLine($"Solution to the differential equation using Runge-Kutta method at x = {xEnd}: y = {yEndRungeKutta}");
+    }
+
+    static double SolveDifferentialEquationRungeKutta(Func<double, double, double> dydx, double x0, double y0, double h, double xEnd)
+    {
+        double x = x0;
+        double y = y0;
+
+        while (x < xEnd)
+        {
+            double k1 = h * dydx(x, y);
+            double k2 = h * dydx(x + 0.5 * h, y + 0.5 * k1);
+            double k3 = h * dydx(x + 0.5 * h, y + 0.5 * k2);
+            double k4 = h * dydx(x + h, y + k3);
+
+            y += (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+            x += h;
+        }
+
+        return y;
     }
 
     static double SolveDifferentialEquationEuler(Func<double, double, double> dydx, double x0, double y0, double h, double xEnd)
